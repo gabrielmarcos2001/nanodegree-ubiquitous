@@ -51,7 +51,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.android.sunshine.app.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Main">
             <intent-filter>
@@ -61,18 +61,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetailActivity"
+            android:name="com.example.android.sunshine.app.DetailActivity"
             android:label="@string/title_activity_detail"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="com.example.android.sunshine.app.MainActivity"
             android:theme="@style/AppTheme.Details">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.sunshine.app.MainActivity" />
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.example.android.sunshine.app.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="com.example.android.sunshine.app.MainActivity"
             android:theme="@style/SettingsTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -80,13 +80,13 @@
         </activity>
 
         <provider
-            android:name=".data.WeatherProvider"
+            android:name="com.example.android.sunshine.app.data.WeatherProvider"
             android:authorities="@string/content_authority"
             android:exported="false"
             android:syncable="true" />
 
         <!-- SyncAdapter's dummy authentication service -->
-        <service android:name=".sync.SunshineAuthenticatorService">
+        <service android:name="com.example.android.sunshine.app.sync.SunshineAuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -98,7 +98,7 @@
 
         <!-- The SyncAdapter service -->
         <service
-            android:name=".sync.SunshineSyncService"
+            android:name="com.example.android.sunshine.app.sync.SunshineSyncService"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
@@ -123,7 +123,7 @@
         </receiver>
         <!-- Muzei Extension -->
         <service
-            android:name=".muzei.WeatherMuzeiSource"
+            android:name="com.example.android.sunshine.app.muzei.WeatherMuzeiSource"
             android:description="@string/muzei_description"
             android:icon="@drawable/ic_muzei"
             android:label="@string/app_name">
@@ -137,7 +137,7 @@
         </service>
         <!-- Today Widget -->
         <receiver
-            android:name=".widget.TodayWidgetProvider"
+            android:name="com.example.android.sunshine.app.widget.TodayWidgetProvider"
             android:label="@string/title_widget_today">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -149,10 +149,10 @@
                 android:resource="@xml/widget_info_today" />
         </receiver>
 
-        <service android:name=".widget.TodayWidgetIntentService" />
+        <service android:name="com.example.android.sunshine.app.widget.TodayWidgetIntentService" />
         <!-- Detail Widget -->
         <receiver
-            android:name=".widget.DetailWidgetProvider"
+            android:name="com.example.android.sunshine.app.widget.DetailWidgetProvider"
             android:enabled="@bool/widget_detail_enabled"
             android:label="@string/title_widget_detail">
             <intent-filter>
@@ -166,26 +166,26 @@
         </receiver>
 
         <service
-            android:name=".widget.DetailWidgetRemoteViewsService"
+            android:name="com.example.android.sunshine.app.widget.DetailWidgetRemoteViewsService"
             android:enabled="@bool/widget_detail_enabled"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
-            android:name="gcm.MyGcmListenerService"
+            android:name="com.example.android.sunshine.app.gcm.MyGcmListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <service
-            android:name="gcm.MyInstanceIDListenerService"
+            android:name="com.example.android.sunshine.app.gcm.MyInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
         <service
-            android:name=".gcm.RegistrationIntentService"
+            android:name="com.example.android.sunshine.app.gcm.RegistrationIntentService"
             android:exported="false"></service>
     </application>
 

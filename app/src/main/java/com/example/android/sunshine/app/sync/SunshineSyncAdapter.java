@@ -30,21 +30,13 @@ import android.text.format.Time;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
+import com.example.android.sunshine.common.WearConnector;
 import com.example.android.sunshine.app.BuildConfig;
 import com.example.android.sunshine.app.MainActivity;
 import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.Utility;
 import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.muzei.WeatherMuzeiSource;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.Asset;
-import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
-import com.google.android.gms.wearable.Wearable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,33 +87,26 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int LOCATION_STATUS_UNKNOWN = 3;
     public static final int LOCATION_STATUS_INVALID = 4;
 
-    private GoogleApiClient mGoogleApiClient;
+    // This object handles the communication between the App and the wereable
+    private WearConnector mConnector;
 
     public SunshineSyncAdapter(final Context context, boolean autoInitialize) {
         super(context, autoInitialize);
 
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle bundle) {
+        // Creates the wereable connector object
+        mConnector = new WearConnector(context);
+        mConnector.connect(new WearConnector.ConnectionInterface() {
 
-                    }
+            @Override
+            public void onConnected() {
+                Log.d("APP","onConnected");
+            }
 
-                    @Override
-                    public void onConnectionSuspended(int i) {
-
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-                    }
-                })
-                .addApi(Wearable.API)
-                .build();
-
-        mGoogleApiClient.connect();
+            @Override
+            public void onError(String error) {
+                Log.e("APP","Connection Error: " + error);
+            }
+        });
     }
 
     @Override
@@ -443,21 +428,14 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                         .fitCenter()
                         .into(resources.getDimensionPixelSize(R.dimen.watchface_icon), resources.getDimensionPixelSize(R.dimen.watchface_icon)).get();
             } catch (InterruptedException | ExecutionException e) {
-                Log.e(LOG_TAG, "Error retrieving large icon from " + artUrl, e);
+                Log.e(LOG_TAG, "Error retrieving thumb icon from " + artUrl, e);
                 thumbIcon = BitmapFactory.decodeResource(resources, artResourceId);
             }
 
-            Asset assetIcon = Utility.createAssetFromBitmap(thumbIcon);
-
-            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/sunshine_weather");
-            putDataMapReq.getDataMap().putString("sunshine_weather_high", Utility.formatTemperature(context, high));
-            putDataMapReq.getDataMap().putString("sunshine_weather_low", Utility.formatTemperature(context, low));
-            putDataMapReq.getDataMap().putDouble("time",System.currentTimeMillis());
-            putDataMapReq.getDataMap().putAsset("sunshine_icon",assetIcon);
-
-            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-            Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+            // Sends the data through the wearable connector
+            mConnector.sendData(Utility.formatTemperature(context, high), Utility.formatTemperature(context, low), thumbIcon);
         }
+
     }
 
     private void notifyWeather() {

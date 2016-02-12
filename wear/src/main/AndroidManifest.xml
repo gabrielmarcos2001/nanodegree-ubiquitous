@@ -19,7 +19,7 @@
         android:theme="@android:style/Theme.DeviceDefault">
 
         <service
-            android:name=".SunshineWatchFaceService"
+            android:name="com.example.android.sunshine.app.SunshineWatchFaceService"
             android:label="@string/my_digital_name"
             android:permission="android.permission.BIND_WALLPAPER">
 

@@ -1,4 +1,4 @@
-package com.example.android.sunshine.app;
+package com.example.android.sunshine.common;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +9,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.Wearable;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +21,18 @@ public class Utility {
     public interface LoadBitmapListener {
         void onError(String error);
         void onBitmapLoaded(Bitmap bitmap);
+    }
+
+    /**
+     * Converts a bitmap to an Asset object, this is used for sending the
+     * weather icon to the watchface
+     * @param bitmap
+     * @return
+     */
+    static public Asset createAssetFromBitmap(Bitmap bitmap) {
+        final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+        return Asset.createFromBytes(byteStream.toByteArray());
     }
 
     static public void loadBitmapFromAsset(final GoogleApiClient client, final Asset asset, final LoadBitmapListener listener) {

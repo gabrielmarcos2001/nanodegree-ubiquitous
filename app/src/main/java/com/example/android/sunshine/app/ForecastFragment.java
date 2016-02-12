@@ -106,7 +106,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        public void onItemSelected(Uri dateUri, ForecastAdapter.ForecastAdapterViewHolder vh);
+        void onItemSelected(Uri dateUri, ForecastAdapter.ForecastAdapterViewHolder vh);
     }
 
     public ForecastFragment() {
@@ -189,6 +189,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+
+                // Adding a Swipe Refresh Layout to force the adapter to sync and re-send
+                // the data to the wereable device
                 SunshineSyncAdapter.syncImmediately(getActivity());
             }
         });
